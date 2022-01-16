@@ -3,6 +3,7 @@ using Microsoft.Identity.Client;
 using System;
 using System.Configuration;
 using System.IO;
+using ConsoleApp21212;
 
 namespace ConsoleApp21212
 {
@@ -29,6 +30,7 @@ namespace ConsoleApp21212
                 var authResult = await pca.AcquireTokenInteractive(ewsScopes).ExecuteAsync();
 
                 // Configure the ExchangeService with the access token
+                
                 var ewsClient = new ExchangeService();
                 ewsClient.Url = new Uri("https://outlook.office365.com/EWS/Exchange.asmx");
                 ewsClient.Credentials = new OAuthCredentials(authResult.AccessToken);
@@ -36,18 +38,15 @@ namespace ConsoleApp21212
 
 
                 //this should create and item and add an email to it
-                var UniqueMessageId = "AAMkADJjY2Q0NTU1LTI3OWUtNDBkMC1hMjAxLTY3ZjBlYWQ4Y2U1YwBGAAAAAAA2dt+UZQfOQpdcyGd7ZWbIBwAfK8aAnKcUT4vAD4zbBMc5AAAAAAEMAAAfK8aAnKcUT4vAD4zbBMc5AAAuXBFmAAA=";
-                var ChangeKey = "CQAAABYAAADqaMMi7xPwQZ7yRYM19cghAAAuaT0/";
-                var ConversationId = "AAQkADcyNzFlNjRmLWMyZTEtNDcyYi1iNDliLWMzNTNlOTI5MDFkYwAQAARxfwPHQYhHqRJDT6lZiew=";
-                var PidTagParentEntryIdPR_PARENT_ENTRYIDptagParentEntryId = "AAAAADlbzB7/6zJPrJvvRGj21psBAOpowyLvE/BBnvJFgzX1yCEAAAAAAQwAAA==";
-                var PidTagStoreEntryIdPR_STORE_ENTRYIDptagStoreEntryId = "AAAAADihuxAF5RAaobsIACsqVsIAAEVNU01EQi5ETEwAAAAAAAAAABtV+iCqZhHNm8gAqgAvxFoMAAAAUEgwUFIxME1CNTQwNC5uYW1wcmQxMC5wcm9kLm91dGxvb2suY29tAE/mcXLhwitHtJvDU+kpAdz3W+OEU4nqQoRvj0CV4JLE";
-                var PidTagEntryIdPR_ENTRYIDptagEntryId = "AAAAADlbzB7/6zJPrJvvRGj21psHAOpowyLvE/BBnvJFgzX1yCEAAAAAAQwAAOpowyLvE/BBnvJFgzX1yCEAAC54F90AAA==";
+                var UniqueMessageId = "";
+               
 
 
-                //// This bit of code can update fields in the message
-                //Item item = Item.Bind(ewsClient, new ItemId(UniqueMessageId));
-                //item.Subject = "test";
-                //item.Update(ConflictResolutionMode.AutoResolve);
+                // This bit of code can update fields in the message
+                Item item = Item.Bind(ewsClient, new ItemId(UniqueMessageId));
+                item.Subject = "test";
+                item.Update(ConflictResolutionMode.AutoResolve); 
+                Item.item.DateTimeCreated
 
                 //// As a best practice, create a property set that limits the properties returned by the Bind method to only those that are required.
                 //PropertySet propSet = new PropertySet(BasePropertySet.IdOnly, EmailMessageSchema.Subject, EmailMessageSchema.ToRecipients);
@@ -62,34 +61,33 @@ namespace ConsoleApp21212
                 //Console.WriteLine("An email with the subject '" + message.Subject + "' has been sent to '" + message.ToRecipients[0] + "'.");
 
 
-                
-                //this can replace emails if you have the message id
-                EmailMessage email = EmailMessage.Bind(ewsClient, UniqueMessageId);
 
-                string emlFileName = @"C:\Source\Demos\output.eml";
-                using (FileStream fs = new FileStream(emlFileName, FileMode.Open, FileAccess.Read))
-                {
-                    byte[] bytes = new byte[fs.Length];
-                    int numBytesToRead = (int)fs.Length;
-                    int numBytesRead = 0;
-                    while (numBytesToRead > 0)
-                    {
-                        int n = await fs.ReadAsync(bytes, numBytesRead, numBytesToRead);
-                        if (n == 0)
-                            break;
-                        numBytesRead += n;
-                        numBytesToRead -= n;
-                    }
-                    // Set the contents of the .eml file to the MimeContent property.
-                    email.MimeContent = new MimeContent("UTF-8", bytes);
-                }
 
-                // Indicate that this email is not a draft. Otherwise, the email will appear as a 
-                // draft to clients.
-                ExtendedPropertyDefinition PR_MESSAGE_FLAGS_msgflag_read = new ExtendedPropertyDefinition(3591, MapiPropertyType.Integer);
-                email.SetExtendedProperty(PR_MESSAGE_FLAGS_msgflag_read, 1);
-                // This results in a CreateItem call to EWS. The email will be saved in the Inbox folder.
-                email.Update(ConflictResolutionMode.AutoResolve);
+                ////this can replace emails if you have the message id
+                //EmailMessage email = EmailMessage.Bind(ewsClient, UniqueMessageId);
+
+                //string emlFileName = @"C:\Source\Demos\output.eml";
+                //using (FileStream fs = new FileStream(emlFileName, FileMode.Open, FileAccess.Read))
+                //{
+                //    byte[] bytes = new byte[fs.Length];
+                //    int numBytesToRead = (int)fs.Length;
+                //    int numBytesRead = 0;
+                //    while (numBytesToRead > 0)
+                //    {
+                //        int n = await fs.ReadAsync(bytes, numBytesRead, numBytesToRead);
+                //        if (n == 0)
+                //            break;
+                //        numBytesRead += n;
+                //        numBytesToRead -= n;
+                //    }
+                //    // Set the contents of the .eml file to the MimeContent property.
+                //    email.MimeContent = new MimeContent("UTF-8", bytes);
+                //}
+
+
+
+
+
 
 
 
